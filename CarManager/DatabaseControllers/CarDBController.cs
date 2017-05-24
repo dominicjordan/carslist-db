@@ -82,5 +82,78 @@ namespace CarManager.DatabaseControllers
                 conn.Close();
             }
         }
+
+        public void Update(Car car)
+        {
+            MySqlTransaction trans = null;
+            try
+            {
+                conn.Open();
+                trans = conn.BeginTransaction();
+                string query = @"UPDATE cars SET brand=@brand, model=@model, suv=@suv WHERE id = @id;";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                MySqlParameter brandParam = new MySqlParameter("@brand", MySqlDbType.VarChar);
+                MySqlParameter modelParam = new MySqlParameter("@model", MySqlDbType.VarChar);
+                MySqlParameter suvParam = new MySqlParameter("@suv", MySqlDbType.Bit);
+                MySqlParameter idParam = new MySqlParameter("@id", MySqlDbType.Int32);
+
+                brandParam.Value = car.Brand;
+                modelParam.Value = car.Model;
+                suvParam.Value = car.SUV;
+                idParam.Value = car.ID;
+
+                cmd.Parameters.Add(brandParam);
+                cmd.Parameters.Add(modelParam);
+                cmd.Parameters.Add(suvParam);
+                cmd.Parameters.Add(idParam);
+
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+                trans.Commit();
+            }
+            catch (Exception e)
+            {
+                trans.Rollback();
+                Console.Write("Er ging iets fout bij het updaten van een car: " + e);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public void DeleteCar(Car car)
+        {
+            MySqlTransaction trans = null;
+            try
+            {
+                conn.Open();
+                trans = conn.BeginTransaction();
+                string query = @"DELETE FROM cars WHERE id = @id;";
+
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                MySqlParameter idParam = new MySqlParameter("@id", MySqlDbType.Int32);
+
+                idParam.Value = car.ID;
+
+                cmd.Parameters.Add(idParam);
+
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+                trans.Commit();
+            }
+            catch (Exception e)
+            {
+                trans.Rollback();
+                Console.Write("Er ging iets fout bij het deleten van een car: " + e);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
     }
 }

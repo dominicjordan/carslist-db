@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CarManager.Models;
+using CarManager.DatabaseControllers;
 using System.Threading;
 
 namespace CarManager
@@ -16,9 +17,11 @@ namespace CarManager
     {
         private CarsList _listForm;
         private Car _car;
+        private CarDBController _carDB;
 
         public CarEdit(CarsList listForm)
         {
+            _carDB = new CarDBController();
             InitializeComponent();
             _listForm = listForm;
             lblTitle.Text = "Toevoegen";
@@ -42,13 +45,17 @@ namespace CarManager
                     Model = txtModel.Text,
                     SUV = false
                 };
-                _listForm.SaveNewCar(_car);
+
+                _carDB.InsertCar(_car);
+                _listForm.ReloadCarsList();
             }
             else
             {
                 _car.Brand = txtBrand.Text;
                 _car.Model = txtModel.Text;
-                _listForm.SaveEditCar(_car);
+
+                _carDB.Update(_car);
+                _listForm.ReloadCarsList();
             }
 
             _listForm.Show();

@@ -4,27 +4,33 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using CarManager.Models;
+using CarManager.DatabaseControllers;
 
 namespace CarManager
 {
     public partial class CarsList : Form
     {
+        private CarDBController _carDB;
         public CarsList()
         {
+            _carDB = new CarDBController();
+
             InitializeComponent();
-            InitializeList();
+            ReloadCarsList();
         }
-        private void InitializeList()
+        public void ReloadCarsList()
         {
             lstCars.Items.Clear();
-            List<Car> cars = new List<Car>
+            List<Car> cars;/* = new List<Car>
             {
                 new Car() {ID = 1, Brand = "BMW", Model = "X5", SUV = true },
                 new Car() {ID = 2, Brand = "VW", Model = "Golf", SUV = false },
                 new Car() {ID = 3, Brand = "Audi", Model = "Q7", SUV = true },
                 new Car() {ID = 4, Brand = "Mercedes", Model = "GLS", SUV = true },
                 new Car() {ID = 1, Brand = "Mini", Model = "Cooper S", SUV = false }
-            };
+            };*/
+
+            cars = _carDB.GetAllCars();
             
             foreach (Car car in cars)
             {
@@ -32,13 +38,13 @@ namespace CarManager
             }
         }
 
-        public void SaveNewCar(Car car)
+        /*public void SaveNewCar(Car car)
         {
             car.ID = lstCars.Items.Cast<Car>().Max(x => x.ID) + 1;
             lstCars.Items.Add(car);
-        }
+        }*/
 
-        public void SaveEditCar(Car car)
+        /*public void SaveEditCar(Car car)
         {
             lstCars.Items[lstCars.SelectedIndex] = car;
             
@@ -52,7 +58,7 @@ namespace CarManager
             //    }
             //}
             //lstCars.Items[index] = car;
-        }
+        }*/
 
         private void RemoveCar(Car car)
         {
@@ -69,7 +75,9 @@ namespace CarManager
         {
             if(lstCars.SelectedItem != null)
             {
-                RemoveCar((Car)lstCars.SelectedItem);
+                _carDB.DeleteCar((Car)lstCars.SelectedItem);
+                ReloadCarsList();
+                //RemoveCar((Car)lstCars.SelectedItem);
             }
         }
 
