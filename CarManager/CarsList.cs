@@ -1,30 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CarManager.Models;
-using CarManager.DatabaseControllers;
 
 namespace CarManager
 {
     public partial class CarsList : Form
     {
-
         public CarsList()
         {
             InitializeComponent();
             InitializeList();
         }
-        List<Car> cars;
         private void InitializeList()
         {
             lstCars.Items.Clear();
-            cars = new List<Car>
+            List<Car> cars = new List<Car>
             {
                 new Car() {ID = 1, Brand = "BMW", Model = "X5", SUV = true },
                 new Car() {ID = 2, Brand = "VW", Model = "Golf", SUV = false },
@@ -47,16 +40,18 @@ namespace CarManager
 
         public void SaveEditCar(Car car)
         {
-            int index = -1;
-            for (int i = 0; i < lstCars.Items.Count; i++)
-            {
-                Car c = lstCars.Items[i] as Car;
-                if(c.ID == car.ID)
-                {
-                    index = i;
-                }
-            }
-            lstCars.Items[index] = car;
+            lstCars.Items[lstCars.SelectedIndex] = car;
+            
+            //int index = -1;
+            //for (int i = 0; i < lstCars.Items.Count; i++)
+            //{
+            //    Car c = lstCars.Items[i] as Car;
+            //    if(c.ID == car.ID)
+            //    {
+            //        index = i;
+            //    }
+            //}
+            //lstCars.Items[index] = car;
         }
 
         private void RemoveCar(Car car)
